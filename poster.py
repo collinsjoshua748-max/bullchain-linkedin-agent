@@ -149,7 +149,7 @@ def post_to_linkedin(text: str) -> dict:
     }
 
     payload = {
-        "author": f"urn:li:organization:{LINKEDIN_ORGANIZATION_ID}",
+        "author": f"urn:li:person:{LINKEDIN_PERSON_ID}",
         "lifecycleState": "PUBLISHED",
         "specificContent": {
             "com.linkedin.ugc.ShareContent": {
