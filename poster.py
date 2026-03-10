@@ -139,7 +139,22 @@ Write the post now. Return only the post text, nothing else."""
     return response.choices[0].message.content.strip()
 
 # ── LinkedIn posting ──────────────────────────────────────────────────────────
+def get_linkedin_person_id() -> str:
+    """Auto-fetch the numeric personal LinkedIn ID using the access token."""
+    headers = {
+        "Authorization": f"Bearer {LINKEDIN_ACCESS_TOKEN}",
+        "X-Restli-Protocol-Version": "2.0.0",
+    }
+    response = requests.get("https://api.linkedin.com/v2/userinfo", headers=headers)
+    response.raise_for_status()
+    data = response.json()
+    # sub field contains the person ID
+    person_id = data.get("sub", "")
+    print(f"✅ LinkedIn Person ID: {person_id}")
+    return person_id
+
 def post_to_linkedin(text: str) -> dict:
+    person_id = get_linkedin_person_id()
     url = "https://api.linkedin.com/v2/ugcPosts"
 
     headers = {
@@ -149,7 +164,7 @@ def post_to_linkedin(text: str) -> dict:
     }
 
     payload = {
-        "author": f"urn:li:person:{LINKEDIN_PERSON_ID}",
+        "author": f"urn:li:person:{person_id}",
         "lifecycleState": "PUBLISHED",
         "specificContent": {
             "com.linkedin.ugc.ShareContent": {
